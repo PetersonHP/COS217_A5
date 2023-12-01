@@ -14,15 +14,6 @@
 printFormatStr:
         .string "%7ld %7ld %7ld\n"
 
-scanFormatStr:
-        .string "%c"
-
-testFormatStr:
-        .string "%c"
-
-testStr:
-        .string "SPACE"
-
 //---------------------------------------------------------------------
 
         .section .data
@@ -100,10 +91,6 @@ scanloop:
         adr     x0, iInWord
         mov     w1, #0
         str     w1, [x0]
-        
-        // DEBUG
-        //adr     x0, testStr
-        //bl      printf
 
 inword:
 
