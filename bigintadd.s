@@ -5,6 +5,16 @@
 
         .section .rodata
 
+zStr:
+        .string "Z\n"
+nStr:
+        .string "N\n"
+cStr:
+        .string "C\n"
+vStr:
+        .string "V\n"
+        
+
 //---------------------------------------------------------------------
 
         .section .data
@@ -173,7 +183,8 @@ startAddLoop:
         str     x0, [sp, ulSum]
 
         // ulCarry = 0;
-        str     xzr, [sp, ulCarry]
+        add     x0, sp, ulCarry
+        str     xzr, [x0]
 
         // ulSum += oAddend1->aulDigits[lIndex];
         ldr     x0, [sp, ulSum]
@@ -194,8 +205,8 @@ startAddLoop:
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
         cmp     x0, x1
-        bge     noOverflow1
-
+        bhs     noOverflow1
+        
         // ulCarry = 1;
         mov     x0, #1
         add     x1, sp, ulCarry
@@ -222,8 +233,8 @@ noOverflow1:
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
         cmp     x0, x1
-        bge     noOverflow2
-
+        bhs     noOverflow2
+        
         // ulCarry = 1;
         mov     x0, #1
         add     x1, sp, ulCarry
@@ -249,7 +260,7 @@ noOverflow2:
         // }
         
 endAddLoop:
-
+ 
         // Check for a carry out of the last "column" of the addition.
         // if (ulCarry != 1) goto noCarry;
         ldr     x0, [sp, ulCarry]
@@ -259,6 +270,7 @@ endAddLoop:
         // if (lSumLength != MAX_DIGITS) goto roomToCarry;
         ldr     x0, [sp, lSumLength]
         mov     x1, MAX_DIGITS
+        cmp     x0, x1
         bne     roomToCarry
 
         // return FALSE
