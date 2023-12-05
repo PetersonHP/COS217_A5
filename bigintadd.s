@@ -5,16 +5,6 @@
 
         .section .rodata
 
-zStr:
-        .string "Z\n"
-nStr:
-        .string "N\n"
-cStr:
-        .string "C\n"
-vStr:
-        .string "V\n"
-        
-
 //---------------------------------------------------------------------
 
         .section .data
@@ -153,7 +143,7 @@ BigInt_add:
         // memset(oSum->aulDigits, 0, MAX_DIGITS *
         //      sizeof(unsigned long));
         ldr     x0, [sp, oSum]  // x0 <- pointer to oSum
-        add     x0, x0, #8    // x0 <- pointer to oSum digits array
+        add     x0, x0, SIZEOF_ULONG    // x0 <- pointer to oSum digits array
         mov     x1, xzr         // w1 <- 0
         mov     x2, SIZEOF_ULONG        // w2 <- sizeof(unsigned long)
         mov     x3, MAX_DIGITS
@@ -189,7 +179,7 @@ startAddLoop:
         // ulSum += oAddend1->aulDigits[lIndex];
         ldr     x0, [sp, ulSum]
         ldr     x1, [sp, oAddend1]
-        add     x1, x1, #8
+        add     x1, x1, SIZEOF_ULONG
         
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
@@ -201,7 +191,7 @@ startAddLoop:
         // if (ulSum >= oAddend1->aulDigits[lIndex]) goto noOverflow1
         ldr     x0, [sp, ulSum]
         ldr     x1, [sp, oAddend1]
-        add     x1, x1, #8
+        add     x1, x1, SIZEOF_ULONG
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
         cmp     x0, x1
@@ -217,7 +207,7 @@ noOverflow1:
         // ulSum += oAddend2->aulDigits[lIndex];
         ldr     x0, [sp, ulSum]
         ldr     x1, [sp, oAddend2]
-        add     x1, x1, #8
+        add     x1, x1, SIZEOF_ULONG
         
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
@@ -229,7 +219,7 @@ noOverflow1:
         // if (ulSum >= oAddend2->aulDigits[lIndex]) goto noOverflow1
         ldr     x0, [sp, ulSum]
         ldr     x1, [sp, oAddend2]
-        add     x1, x1, #8
+        add     x1, x1, SIZEOF_ULONG
         ldr     x2, [sp, lIndex]
         ldr     x1, [x1, x2, lsl #3]
         cmp     x0, x1
@@ -244,7 +234,7 @@ noOverflow2:
 
         // oSum->aulDigits[lIndex] = ulSum;
         ldr     x0, [sp, oSum]
-        add     x0, x0, #8    // x0 <- pointer to digit array
+        add     x0, x0, SIZEOF_ULONG    // x0 <- pointer to digit array
         ldr     x1, [sp, lIndex]        // x1 <- index
         ldr     x2, [sp, ulSum]         // x2 <- pointer to sum
         str     x2, [x0, x1, lsl #3]
@@ -283,7 +273,7 @@ roomToCarry:
         
         // oSum->aulDigits[lSumLength] = 1;
         ldr     x0, [sp, oSum]
-        add     x0, x0, #8
+        add     x0, x0, SIZEOF_ULONG
         ldr     x1, [sp, lSumLength]
         mov     x2, #1
         str     x2, [x0, x1, lsl #3]
